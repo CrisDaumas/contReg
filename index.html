@@ -15,18 +15,38 @@
             margin: 0;
             background-color: #f0f8ff;
         }
+        #countdown, #celebration-gif, #qr-code {
+            position: absolute;
+        }
+        #celebration-gif, #qr-code {
+            display: none;
+            width: 1em;
+            height: 1em;
+        }
     </style>
 </head>
 <body>
     <div id="countdown">00:00:00</div>
+    <audio id="alarm-sound" src="sound.ogg"></audio>
+    <img id="celebration-gif" src="img.gif" alt="Celebração">
+    <img id="qr-code" src="qr.png" alt="QR Code">
 
     <script>
+        let countdownInterval;
+
         function startCountdown() {
             const now = new Date();
             const midnight = new Date();
             midnight.setHours(24, 0, 0, 0);
 
             const countdownElement = document.getElementById("countdown");
+            const alarmSound = document.getElementById("alarm-sound");
+            const celebrationGif = document.getElementById("celebration-gif");
+            const qrCode = document.getElementById("qr-code");
+
+            function showQRCode() {
+                qrCode.style.display = "block";
+            }
 
             function updateCountdown() {
                 const currentTime = new Date();
@@ -34,6 +54,12 @@
 
                 if (remainingTime <= 0) {
                     countdownElement.textContent = "00:00:00";
+                    alarmSound.play(); // Toca o som imediatamente
+                    countdownElement.style.display = "none";
+                    celebrationGif.style.display = "block"; // Exibe o GIF imediatamente
+
+                    // Exibe o QR Code após 30 segundos
+                    setTimeout(showQRCode, 30000);
                 } else {
                     const hours = String(Math.floor((remainingTime / (1000 * 60 * 60)) % 24)).padStart(2, '0');
                     const minutes = String(Math.floor((remainingTime / (1000 * 60)) % 60)).padStart(2, '0');
@@ -43,8 +69,33 @@
             }
 
             updateCountdown();
-            setInterval(updateCountdown, 1000);
+            countdownInterval = setInterval(updateCountdown, 1000);
         }
+
+        function setToMidnight() {
+            clearInterval(countdownInterval);  // Para qualquer contagem existente
+            const countdownElement = document.getElementById("countdown");
+            const alarmSound = document.getElementById("alarm-sound");
+            const celebrationGif = document.getElementById("celebration-gif");
+            const qrCode = document.getElementById("qr-code");
+
+            countdownElement.textContent = "00:00:00";
+            alarmSound.play(); // Toca o som imediatamente
+            countdownElement.style.display = "none";
+            celebrationGif.style.display = "block"; // Exibe o GIF imediatamente
+
+            // Exibe o QR code 30 segundos depois
+            setTimeout(() => {
+                qrCode.style.display = "block";
+            }, 30000);
+        }
+
+        // Detecta a tecla "u" para forçar a contagem regressiva para meia-noite
+        document.addEventListener('keydown', (event) => {
+            if (event.key === 'u' || event.key === 'U') {
+                setToMidnight();
+            }
+        });
 
         startCountdown();
     </script>
