@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contagem Regressiva</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+            font-size: 5em;
+            margin: 0;
+            background-color: #f0f8ff;
+        }
+    </style>
+</head>
+<body>
+    <div id="countdown">00:00:00</div>
+
+    <script>
+        function startCountdown() {
+            const now = new Date();
+            const midnight = new Date();
+            midnight.setHours(24, 0, 0, 0);
+
+            const countdownElement = document.getElementById("countdown");
+
+            function updateCountdown() {
+                const currentTime = new Date();
+                const remainingTime = midnight - currentTime;
+
+                if (remainingTime <= 0) {
+                    countdownElement.textContent = "00:00:00";
+                } else {
+                    const hours = String(Math.floor((remainingTime / (1000 * 60 * 60)) % 24)).padStart(2, '0');
+                    const minutes = String(Math.floor((remainingTime / (1000 * 60)) % 60)).padStart(2, '0');
+                    const seconds = String(Math.floor((remainingTime / 1000) % 60)).padStart(2, '0');
+                    countdownElement.textContent = `${hours}:${minutes}:${seconds}`;
+                }
+            }
+
+            updateCountdown();
+            setInterval(updateCountdown, 1000);
+        }
+
+        startCountdown();
+    </script>
+</body>
+</html>
